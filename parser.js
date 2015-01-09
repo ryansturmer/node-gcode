@@ -36,11 +36,7 @@ module.exports = (function() {
         peg$c1 = null,
         peg$c2 = [],
         peg$c3 = function(num, words) {
-              var result = {'N':num}
-              words.forEach(function(word) {
-                result[word[0]] =word[1];
-              });
-              return result;
+              return {'N':num, 'words':words}
         },
         peg$c4 = function(word, value) { return [word, value]; },
         peg$c5 = "N",

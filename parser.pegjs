@@ -16,11 +16,7 @@ start
 
 line 
   = num:line_number? words:word* {
-      var result = {'N':num}
-      words.forEach(function(word) {
-        result[word[0]] =word[1];
-      });
-      return result;
+      return {'N':num, 'words':words}
 }
 
 word = word:letter value:real_value { return [word, value]; }

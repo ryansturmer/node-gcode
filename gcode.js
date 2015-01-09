@@ -68,6 +68,56 @@ GCodeParser.prototype._transform = function (object, encoding, done) {
 	done();
 };
 
+var Interpreter = function(options) {}
+
+Interpreter.prototype._exec = function(cmd, args) {
+	if((cmd in this) && (typeof this[cmd] == 'function')) {
+		f = this[cmd];
+		return f(args);
+	}
+}
+
+Interpreter.prototype._handle_line = function(line) {
+	var words = {}
+	line.words.forEach(function(word) {
+		var letter = word[0];
+		var arg = word[1];
+		switch(letter) {
+			case 'G':
+			case 'M':
+			break;
+			default:
+				words[letter] = arg;
+				break;
+		}
+	}.bind(this));
+
+	line.words.forEach(function(word) {
+		var letter = word[0];
+		var arg = word[1];
+		switch(letter) {
+			case 'G':
+			case 'M':
+				func = letter + arg;
+				this._exec(func, words)
+			break;
+			default:
+			break;
+		}
+	}.bind(this));
+}
+
+Interpreter.prototype.interpretFile = function(file) {
+	var results = [];
+	fs.createReadStream(file)
+	.pipe(new GCodeStripper())
+	.pipe(byline())
+	.pipe(new GCodeParser())
+	.on('data', function(line) {
+		this._handle_line(line);
+	}.bind(this))
+}
+
 var parseFile = function(file, callback) {
 	var results = [];
 	fs.createReadStream(file)
@@ -82,4 +132,5 @@ var parseFile = function(file, callback) {
 	});
 }
 
-module.exports.parseFile = parseFile
+module.exports.parseFile = parseFile;
+module.exports.Interpreter = Interpreter;
