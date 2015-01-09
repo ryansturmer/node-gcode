@@ -1,0 +1,20 @@
+{
+  "author": "Ryan Sturmer",
+  "name": "gcode",
+  "description": "Parse and interpret G-code files",
+  "version": "0.0.1",
+  "repository": {
+    "url": "https://github.com/ryansturmer/node-gcode.git"
+  },
+  "main": "index.js",
+  "keywords": [
+    "gcode",
+    "cnc"
+  ],
+  "dependencies": {
+    "byline": "^4.1.1"
+  },
+  "engines": {
+    "node": "*"
+  }
+}
