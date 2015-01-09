@@ -37,6 +37,7 @@ Writing a custom interpreter for G-code is easy with the `Interpreter` object pr
 Interpreter = require('gcode').Interpreter;
 
 var MyGCodeRunner = function() {
+    this.units = 'imperial'
     Interpreter.call(this);
 }
 util.inherits(MyGCodeRunner, Interpreter)
@@ -44,6 +45,16 @@ util.inherits(MyGCodeRunner, Interpreter)
 MyGCodeRunner.prototype.G0 = function(args) {
     console.log("Got a G0 code!");
     console.log(args);
+}
+
+MyGCodeRunner.prototype.G20 = function(args) {
+    console.log("Switching to inches.");
+    this.units = 'imperial'
+}
+
+MyGCodeRunner.prototype.G21 = function(args) {
+    console.log("Switching to millimeters.");
+    this.units = 'metric'
 }
 
 runner = new MyGCodeRunner();
