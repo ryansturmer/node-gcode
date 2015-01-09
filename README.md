@@ -17,9 +17,9 @@ gcode.parseFile('example.nc', function(err, data) {
 })
 ```
 
-The data returned by the `parseFile` callback is a list of G-code blocks, where each block is an object with a `num` property (the G-code line number) and a `words` property (the list of G-code words on that line) Each G-code word is a list of two items, the word letter (G, M, X,Y,Z, etc.) and the word argument.  Word arguments are typically numbers, but the parser supports full expressions, including parameter values, so in the event that an expression or parameter value is provided, an expression-tree-like object is returned that must be evaluated.  Currently, this is left as an exercise for the reader.
+The data returned by the `parseFile` callback is a list of G-code blocks, where each block is an object with a `num` property (the G-code line number) and a `words` property (the list of G-code words in that block) Each G-code word is a list of two items, the word letter (G, M, X,Y,Z, etc.) and the word argument.  Word arguments are typically numbers, but the parser supports full expressions, including parameter values, so in the event that an expression or parameter value is provided, an expression-tree-like object is returned that must be evaluated.  Currently, this is left as an exercise for the reader.
 
-The output of the above example might look like this:
+The output of the above example might look like this _(note the last line that includes 3+5 in the X-axis word)_:
 
 ```js
 [{"N":null,"words":[["G",17]]},
