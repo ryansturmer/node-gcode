@@ -31,7 +31,7 @@ The output of the above example might look like this _(note the last line that i
 
 G-code Interpreters
 -------------------
-Writing a custom interpreter for G-code is easy with the `Interpreter` object provided by the gcode library.  To create your own interpreter, use the following example.:
+Writing a custom interpreter for G-code is easy with the `Interpreter` object provided by the gcode library.  To create your own interpreter, use the following example:
 
 ```js
 Interpreter = require('gcode').Interpreter;
