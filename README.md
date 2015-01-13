@@ -1,6 +1,10 @@
 # node-gcode
 GCode interpreter and simulator for node.js
 
+Most of the function if this interpreter is derived from the [NIST G-code standard.](http://www.nist.gov/customcf/get_pdf.cfm?pub_id=823374)
+
+
+
 Installation
 ------------
 Install from npm
@@ -37,7 +41,7 @@ Writing a custom interpreter for G-code is easy with the `Interpreter` object pr
 Interpreter = require('gcode').Interpreter;
 
 var MyGCodeRunner = function() {
-    this.units = 'imperial'
+    this.units = 'imperial';
     Interpreter.call(this);
 }
 util.inherits(MyGCodeRunner, Interpreter)
@@ -49,12 +53,12 @@ MyGCodeRunner.prototype.G0 = function(args) {
 
 MyGCodeRunner.prototype.G20 = function(args) {
     console.log("Switching to inches.");
-    this.units = 'imperial'
+    this.units = 'imperial';
 }
 
 MyGCodeRunner.prototype.G21 = function(args) {
     console.log("Switching to millimeters.");
-    this.units = 'metric'
+    this.units = 'metric';
 }
 
 runner = new MyGCodeRunner();
@@ -63,3 +67,11 @@ runner.interpretFile('example.nc');
 ```
 
 Any handlers attached to the interpreter whose names correspond to G or M codes are called in turn as those codes are parsed from the incoming file stream.
+
+G-codes that contain decimal points (G38.2, G59.1, etc.) are represented as handler functions by replacing the decimal point in the code with an underscore.  Thus, the handler for G38.2 would be:
+
+```js
+MyGCodeRunner.prototype.G38_2 = function(args) {
+    console.log("Initiating a straight probe: " + args);
+}
+```
