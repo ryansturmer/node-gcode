@@ -1,7 +1,7 @@
 # node-gcode
 GCode interpreter and simulator for node.js
 
-Most of the function if this interpreter is derived from the [NIST G-code standard.](http://www.nist.gov/customcf/get_pdf.cfm?pub_id=823374)
+Most of the function of this interpreter is derived from the [NIST G-code standard.](http://www.nist.gov/customcf/get_pdf.cfm?pub_id=823374)
 
 
 
