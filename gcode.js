@@ -5,13 +5,13 @@ var fs = require('fs');
 var byline = require('byline');
 
 // Strips spaces out of all incoming g-code except for comments
-function GCodeStripper() {
+function GCodeScrubber() {
 	this.in_comment = false;
 	Transform.call(this);
 }
-util.inherits(GCodeStripper, Transform);
+util.inherits(GCodeScrubber, Transform);
 
-GCodeStripper.prototype._transform = function(s, enc, done) {
+GCodeScrubber.prototype._transform = function(s, enc, done) {
 	try {
 		for(var result = [], i=0, j=0; i<s.length; i++) {
 			var c = String.fromCharCode(s[i]);
@@ -98,7 +98,7 @@ Interpreter.prototype._handle_line = function(line) {
 		switch(letter) {
 			case 'G':
 			case 'M':
-				func = letter + arg;
+				func = (letter + arg).replace('.','_');
 				this._exec(func, words)
 			break;
 			default:
@@ -110,7 +110,7 @@ Interpreter.prototype._handle_line = function(line) {
 Interpreter.prototype.interpretFile = function(file) {
 	var results = [];
 	fs.createReadStream(file)
-	.pipe(new GCodeStripper())
+	.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
@@ -121,7 +121,7 @@ Interpreter.prototype.interpretFile = function(file) {
 var parseFile = function(file, callback) {
 	var results = [];
 	fs.createReadStream(file)
-	.pipe(new GCodeStripper())
+	.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
