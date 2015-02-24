@@ -43,4 +43,18 @@ describe('G-Code Files', function(done) {
 		});
 	});
 
+
+	describe('Complete Callback', function(done) {
+		it('Should call the interpretFile callback at the end of interpreting the file.', function(done) {
+			var MyGCodeRunner = function() {
+			    gcode.Interpreter.call(this);
+			}
+			util.inherits(MyGCodeRunner, gcode.Interpreter)
+			runner = new MyGCodeRunner();
+			runner.interpretFile('test/spaces.nc', function(err, result) {
+                done();   
+            });
+		});
+	});
+
 });

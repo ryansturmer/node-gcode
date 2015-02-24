@@ -107,15 +107,19 @@ Interpreter.prototype._handle_line = function(line) {
 	}.bind(this));
 }
 
-Interpreter.prototype.interpretFile = function(file) {
+Interpreter.prototype.interpretFile = function(file, callback) {
 	var results = [];
 	fs.createReadStream(file)
 	.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
+        results.push(line);
 		this._handle_line(line);
 	}.bind(this))
+    .on('end', function() {
+		typeof callback === 'function' && callback(null, results);
+    }.bind(this));
 }
 
 var parseFile = function(file, callback) {
