@@ -1,4 +1,5 @@
 var should = require('chai').should();
+var expect = require('chai').expect;
 var gcode = require("../index");
 var util = require('util');
 
@@ -48,10 +49,12 @@ describe('G-Code Files', function(done) {
 		it('Should call the interpretFile callback at the end of interpreting the file.', function(done) {
 			var MyGCodeRunner = function() {
 			    gcode.Interpreter.call(this);
-			}
+			    this.attribute = "Test Attribute";
+            }
 			util.inherits(MyGCodeRunner, gcode.Interpreter)
 			runner = new MyGCodeRunner();
 			runner.interpretFile('test/spaces.nc', function(err, result) {
+                expect(this.attribute).to.equal("Test Attribute");
                 done();   
             });
 		});

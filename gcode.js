@@ -118,7 +118,9 @@ Interpreter.prototype.interpretFile = function(file, callback) {
 		this._handle_line(line);
 	}.bind(this))
     .on('end', function() {
-		typeof callback === 'function' && callback(null, results);
+		if(typeof callback === 'function') {
+            callback.bind(this)(null, results);
+        }
     }.bind(this));
 }
 
