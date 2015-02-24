@@ -73,7 +73,7 @@ var Interpreter = function(options) {}
 Interpreter.prototype._exec = function(cmd, args) {
 	if((cmd in this) && (typeof this[cmd] == 'function')) {
 		f = this[cmd];
-		return f(args);
+		return f(args).bind(this);
 	}
 }
 
