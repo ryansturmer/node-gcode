@@ -3,6 +3,7 @@
   "name": "gcode",
   "description": "Parse and interpret G-code files",
   "version": "0.1.2",
+  "license": "MIT",
   "repository": {
     "url": "https://github.com/ryansturmer/node-gcode.git"
   },
