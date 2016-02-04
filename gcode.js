@@ -5,13 +5,13 @@ var fs = require('fs');
 var byline = require('byline');
 
 // Strips spaces out of all incoming g-code except for comments
-function GCodeStripper() {
+function GCodeScrubber() {
 	this.in_comment = false;
 	Transform.call(this);
 }
-util.inherits(GCodeStripper, Transform);
+util.inherits(GCodeScrubber, Transform);
 
-GCodeStripper.prototype._transform = function(s, enc, done) {
+GCodeScrubber.prototype._transform = function(s, enc, done) {
 	try {
 		for(var result = [], i=0, j=0; i<s.length; i++) {
 			var c = String.fromCharCode(s[i]);
@@ -72,7 +72,7 @@ var Interpreter = function(options) {}
 
 Interpreter.prototype._exec = function(cmd, args) {
 	if((cmd in this) && (typeof this[cmd] == 'function')) {
-		f = this[cmd];
+		f = this[cmd].bind(this);
 		return f(args);
 	}
 }
@@ -98,7 +98,7 @@ Interpreter.prototype._handle_line = function(line) {
 		switch(letter) {
 			case 'G':
 			case 'M':
-				func = letter + arg;
+				func = (letter + arg).replace('.','_');
 				this._exec(func, words)
 			break;
 			default:
@@ -107,21 +107,27 @@ Interpreter.prototype._handle_line = function(line) {
 	}.bind(this));
 }
 
-Interpreter.prototype.interpretFile = function(file) {
+Interpreter.prototype.interpretFile = function(file, callback) {
 	var results = [];
 	fs.createReadStream(file)
-	.pipe(new GCodeStripper())
+	.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
+        results.push(line);
 		this._handle_line(line);
 	}.bind(this))
+    .on('end', function() {
+		if(typeof callback === 'function') {
+            callback.bind(this)(null, results);
+        }
+    }.bind(this));
 }
 
 var parseFile = function(file, callback) {
 	var results = [];
 	fs.createReadStream(file)
-	.pipe(new GCodeStripper())
+	.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {

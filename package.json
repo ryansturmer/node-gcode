@@ -2,8 +2,8 @@
   "author": "Ryan Sturmer",
   "name": "gcode",
   "description": "Parse and interpret G-code files",
-  "version": "0.1.2",
   "license": "MIT",
+  "version": "0.2.1",
   "repository": {
     "url": "https://github.com/ryansturmer/node-gcode.git"
   },
@@ -17,5 +17,10 @@
   },
   "engines": {
     "node": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "mocha": "*",
+    "npm-release": "0.0.4-3"
   }
 }
