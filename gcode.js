@@ -1,4 +1,4 @@
-var Transform = require('stream').Transform;
+var stream = require('stream');
 var util = require('util');
 var parser = require('./parser');
 var fs = require('fs');
@@ -7,9 +7,9 @@ var byline = require('byline');
 // Strips spaces out of all incoming g-code except for comments
 function GCodeScrubber() {
 	this.in_comment = false;
-	Transform.call(this);
+	stream.Transform.call(this);
 }
-util.inherits(GCodeScrubber, Transform);
+util.inherits(GCodeScrubber, stream.Transform);
 
 GCodeScrubber.prototype._transform = function(s, enc, done) {
 	try {
@@ -56,9 +56,9 @@ GCodeScrubber.prototype._transform = function(s, enc, done) {
 function GCodeParser(options) {
 	if (!options) options = {};
 	options.objectMode = true;
-	Transform.call(this, options);
+	stream.Transform.call(this, options);
 }
-util.inherits(GCodeParser, Transform);
+util.inherits(GCodeParser, stream.Transform);
 
 GCodeParser.prototype._transform = function (object, encoding, done) {
 	if(encoding === 'buffer') {
@@ -124,10 +124,9 @@ Interpreter.prototype.interpretFile = function(file, callback) {
     }.bind(this));
 }
 
-var parseFile = function(file, callback) {
+var parseStream = function(st, callback) {
 	var results = [];
-	fs.createReadStream(file)
-	.pipe(new GCodeScrubber())
+	st.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
@@ -138,5 +137,19 @@ var parseFile = function(file, callback) {
 	});
 }
 
+var parseFile = function(file, callback) {
+	return parseStream(fs.createReadStream(file), callback)
+}
+
+var parseString = function(s, callback) {
+	var st = new stream.Readable();
+	st._read = function noop() {}; // redundant? see update below
+	st.push(s);
+	st.push(null);
+	return parseStream(st, callback)
+}
+
+module.exports.parseStream = parseStream;
+module.exports.parseString = parseString;
 module.exports.parseFile = parseFile;
 module.exports.Interpreter = Interpreter;

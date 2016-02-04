@@ -3,7 +3,49 @@ var expect = require('chai').expect;
 var gcode = require("../index");
 var util = require('util');
 
-describe('G-Code Files', function(done) {
+describe('G-Code String', function(done) {
+
+	describe('Parse String', function(done) {
+		it('Should return correct output for parsing a simple string.', function(done) {
+			gcode.parseString('N03 G1 X1.234 Y5.678 Z-9.101112 F250', function(err, data) {
+				should.not.exist(err);
+				data.forEach(function(item) {
+					words = item.words
+					words.forEach(function(word) {
+						if(word[0] === 'N') { word[1].should.equal(3)}
+						if(word[0] === 'G') { word[1].should.equal(1)}
+						if(word[0] === 'X') { word[1].should.equal(1.234)}
+						if(word[0] === 'Y') { word[1].should.equal(5.678)}
+						if(word[0] === 'Z') { word[1].should.equal(-9.101112)}
+						if(word[0] === 'F') { word[1].should.equal(250)}
+					});
+				})
+				done();
+			});
+		});
+	});
+
+	describe('Parse Multiline String', function(done) {
+		it('Should return correct output for parsing a simple string.', function(done) {
+			gcode.parseString('N03 G1 X1.234 Y5.678 Z-9.101112 F250\nG0 A1 B2', function(err, data) {
+				should.not.exist(err);
+				data[0].words.forEach(function(word) {
+					if(word[0] === 'N') { word[1].should.equal(3)}
+					if(word[0] === 'G') { word[1].should.equal(1)}
+					if(word[0] === 'X') { word[1].should.equal(1.234)}
+					if(word[0] === 'Y') { word[1].should.equal(5.678)}
+					if(word[0] === 'Z') { word[1].should.equal(-9.101112)}
+					if(word[0] === 'F') { word[1].should.equal(250)}
+				});
+				data[1].words.forEach(function(word) {
+					if(word[0] === 'G') { word[1].should.equal(0)}
+					if(word[0] === 'A') { word[1].should.equal(1)}
+					if(word[0] === 'B') { word[1].should.equal(2)}
+				});
+				done();
+			});
+		});
+	});
 
 	describe('Space Invariance', function(done) {
 		it('Should parse differently spaced lines as identical.', function(done) {
@@ -59,5 +101,6 @@ describe('G-Code Files', function(done) {
             });
 		});
 	});
+
 
 });
