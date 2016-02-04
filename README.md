@@ -49,7 +49,7 @@ gcode.parseString('G0 X1 Y2 Z3', function(err, result) {
 });
 ```
 
-See `parseFile` above for the output format.  Strings work exactly the same way.  The output of the above example would be:
+See `parseFile` above for the output format.  Strings work exactly the same way.  Strings can contain any number of codes, separated by newlines per the standard.  The output of the above example would be:
 
 ```js
 [{"N":null,"words":[["G",0], ['X',1],['Y',2],['Z',3]]}]
