@@ -86,6 +86,7 @@ MyGCodeRunner.prototype.G21 = function(args) {
 runner = new MyGCodeRunner();
 
 runner.interpretFile('example.nc');
+runner.interpretString('G0 X1 Y2 Z3\nG4 P3');
 ```
 
 Any handlers attached to the interpreter whose names correspond to G or M codes are called in turn as those codes are parsed from the incoming file stream.
