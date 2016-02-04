@@ -83,9 +83,35 @@ describe('G-Code String', function(done) {
 			runner = new MyGCodeRunner();
 
 			runner.interpretFile('test/extensions.nc');
-		});
+		}); 
 	});
 
+
+	describe('Interpret String', function(done) {
+		it('Should correctly interpret a provided string.', function(done) {
+			var MyGCodeRunner = function() {
+			    gcode.Interpreter.call(this);
+            }
+			util.inherits(MyGCodeRunner, gcode.Interpreter)
+
+			MyGCodeRunner.prototype.G1 = function(args) {
+				args.X.should.equal(1.234);
+				args.Y.should.equal(5.678)
+			}
+
+			MyGCodeRunner.prototype._ = function(cmd, args) {
+				cmd.should.equal('G0');
+				args.A.should.equal(1);
+				args.B.should.equal(2);				
+			}
+
+			var runner = new MyGCodeRunner();
+
+			runner.interpretString('N03 G1 X1.234 Y5.678 Z-9.101112 F250\nG0 A1 B2', function(err, result) {
+                done();   
+            });
+		});
+	});
 
 	describe('Complete Callback', function(done) {
 		it('Should call the interpretFile callback at the end of interpreting the file.', function(done) {

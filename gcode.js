@@ -74,7 +74,13 @@ Interpreter.prototype._exec = function(cmd, args) {
 	if((cmd in this) && (typeof this[cmd] == 'function')) {
 		f = this[cmd].bind(this);
 		return f(args);
+	} else {
+		return this._(cmd, args);
 	}
+}
+
+Interpreter.prototype._ = function(cmd, args) {
+	return;
 }
 
 Interpreter.prototype._handle_line = function(line) {
@@ -98,7 +104,7 @@ Interpreter.prototype._handle_line = function(line) {
 		switch(letter) {
 			case 'G':
 			case 'M':
-				func = (letter + arg).replace('.','_');
+				func = (letter + arg).replace('.','_').trim();
 				this._exec(func, words)
 			break;
 			default:
@@ -107,21 +113,30 @@ Interpreter.prototype._handle_line = function(line) {
 	}.bind(this));
 }
 
-Interpreter.prototype.interpretFile = function(file, callback) {
-	var results = [];
-	fs.createReadStream(file)
-	.pipe(new GCodeScrubber())
+Interpreter.prototype.interpretStream = function(st, callback) {
+	st.pipe(new GCodeScrubber())
 	.pipe(byline())
 	.pipe(new GCodeParser())
 	.on('data', function(line) {
-        results.push(line);
 		this._handle_line(line);
 	}.bind(this))
     .on('end', function() {
-		if(typeof callback === 'function') {
-            callback.bind(this)(null, results);
+		if(callback && typeof callback === 'function') {
+            callback.bind(this)(null);
         }
     }.bind(this));
+}
+
+Interpreter.prototype.interpretFile = function(file, callback) {
+	this.interpretStream(fs.createReadStream(file), callback);
+}
+
+Interpreter.prototype.interpretString = function(s, callback) {
+	var st = new stream.Readable();
+	st._read = function noop() {}; // redundant? see update below
+	st.push(s);
+	st.push(null);
+	return this.interpretStream(st, callback);
 }
 
 var parseStream = function(st, callback) {
