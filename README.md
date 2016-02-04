@@ -40,6 +40,21 @@ The output of the above example might look like this _(note the last line that i
  {"N":null,"words":[["G",0],["X",{"left":3,"right":5,"op":"+"}]]}]
 ```
 
+Parsing a G-code String
+-----------------------
+```js
+gcode = require('gcode');
+gcode.parseString('G0 X1 Y2 Z3', function(err, result) {
+   console.log(JSON.stringify(data)); 
+});
+```
+
+See `parseFile` above for the output format.  Strings work exactly the same way.  The output of the above example would be:
+
+```js
+[{"N":null,"words":[["G",0], ['X',1],['Y',2],['Z',3]]}]
+```
+
 G-code Interpreters
 -------------------
 Writing a custom interpreter for G-code is easy with the `Interpreter` object provided by the gcode library.  To create your own interpreter, use the following example:
