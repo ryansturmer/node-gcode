@@ -16,8 +16,8 @@ Parsing a G-code File
 ---------------------
 ```js
 gcode = require('gcode')
-gcode.parseFile('example.nc', function(err, data) {
-    console.log(JSON.stringify(data));
+gcode.parseFile('example.nc', function(err, result) {
+    console.log(JSON.stringify(result));
 })
 ```
 
@@ -45,7 +45,7 @@ Parsing a G-code String
 ```js
 gcode = require('gcode');
 gcode.parseString('G0 X1 Y2 Z3', function(err, result) {
-   console.log(JSON.stringify(data)); 
+   console.log(JSON.stringify(result)); 
 });
 ```
 
