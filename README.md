@@ -97,3 +97,12 @@ MyGCodeRunner.prototype.G38_2 = function(args) {
     console.log("Initiating a straight probe: " + args);
 }
 ```
+
+There is a special handler for any unhandled codes, which is just an underscore.  If you define this method on your interpeter, it will be called for every unknown G or M code that is encountered.  Because it is for handling unknown G/M codes, it takes two arguments, the command, followed by the remaining words in the code:
+
+```js
+MyGCodeRunner.prototype._ = function(cmd, args) {
+    console.log('Got an unknown G/M code: ',cmd);
+    console.log('With arguments: ', args);
+}
+```
